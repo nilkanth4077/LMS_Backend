@@ -4,7 +4,7 @@ import com.e_commerce.dto.LoginRequest;
 import com.e_commerce.dto.LoginResponse;
 import com.e_commerce.entity.User;
 import com.e_commerce.exception.UserException;
-import com.e_commerce.repository.UserRepo;
+import com.e_commerce.repository.UserRepository;
 import com.e_commerce.service.UserService;
 import com.e_commerce.util.JwtUtil;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -22,12 +21,13 @@ import java.util.Optional;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final UserRepo userRepository;
+    private final UserRepository userRepository;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public AuthController(AuthenticationManager authenticationManager, UserRepo userRepository, UserService userService,
+
+    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, UserService userService,
                           PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -39,6 +39,7 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole("USER");
         userRepository.save(user);
         return ResponseEntity.ok("User registered successfully");
     }
@@ -51,10 +52,14 @@ public class AuthController {
         String token = jwtUtil.generateToken(authentication.getName(),
                 authentication.getAuthorities().iterator().next().getAuthority());
 
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(token);
         String role = authentication.getAuthorities().iterator().next().getAuthority();
         loginResponse.setRole(role);
+        loginResponse.setUser(user);
         return ResponseEntity.ok(loginResponse);
     }
 
@@ -67,4 +72,5 @@ public class AuthController {
             throw new UserException("Invalid Authorization header");
         }
     }
+
 }
