@@ -1,6 +1,12 @@
 package com.e_commerce.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProgressRequest {
 
     private Long userId;
@@ -9,35 +15,4 @@ public class ProgressRequest {
     private float duration;
 
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(Long courseId) {
-        this.courseId = courseId;
-    }
-
-    public float getPlayedTime() {
-        return playedTime;
-    }
-
-    public void setPlayedTime(float playedTime) {
-        this.playedTime = playedTime;
-    }
-
-    public float getDuration() {
-        return duration;
-    }
-
-    public void setDuration(float duration) {
-        this.duration = duration;
-    }
 }
