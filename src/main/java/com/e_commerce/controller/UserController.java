@@ -130,6 +130,16 @@ public class UserController {
         return assessmentService.saveAssessment(user, course, assessment);
     }
 
+    @GetMapping("/assessment/get/{userId}/{courseId}")
+    public ResponseEntity<?> getMarks(@PathVariable Long userId, @PathVariable Long courseId) {
+        Integer marks = assessmentService.getMarksByUserIdAndCourseId(userId, courseId);
+        if (marks != null) {
+            return ResponseEntity.ok(marks);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Assessment not found for the given user and course.");
+        }
+    }
+
     @PostMapping("/cart/add")
     public Cart addToCart(@RequestBody CartRequest cartRequest) {
         return cartService.addToCart(cartRequest);
