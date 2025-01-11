@@ -26,9 +26,11 @@ public class Course {
 
     private String description;
 
+    @Column(length = 100000)
     @JsonProperty("p_link")
     private String p_link;
 
+    @Column(length = 100000)
     @JsonProperty("y_link")
     private String y_link;
 

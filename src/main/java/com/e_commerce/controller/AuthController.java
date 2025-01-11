@@ -73,4 +73,14 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/flutter_register")
+    public User flutterRegister(@RequestBody User user) {
+        return userRepository.save(user);
+    }
+
+    @PostMapping("/flutter_login")
+    public User Login(@RequestBody User user) {
+        return userRepository.findByEmailAndPassword(user.getEmail(), user.getPassword());
+    }
+
 }
